@@ -1,0 +1,319 @@
+HUGO
+Painless Static Generated Websites
+31 Jul 2015
+Tags: h-art, go, hugo, front-end, development, dev, meeting, devmeeting
+
+
+❥❥
+
+Andrea Collet
+Freelance Frontend developer, H-art
+acollet.ce@h-art.com
+http://www.h-art.com
+@ifthenelse
+
+
+**
+**
+
+
+* GENERAL OVERVIEW
+
+
+**
+**
+
+
+* WHAT'S HUGO
+
+Hugo is a Static website generator written in GO.
+It is intended expecially to create blog, but it adapts perfectly to build landing pages and websites as well.
+
+.image hugo-logo.png
+
+It is available at:
+
+.link http://gohugo.io/
+.link https://github.com/spf13/hugo
+
+
+**
+**
+
+
+* WHY IT'S SO AWESOME
+
+- No need to caching pages
+- Support for *JSON*/*CSV*data-driven*structure* (just-in-case)
+- Inspired by *Jekyll* workflow
+- It's built in [[https://goland.org][Go]] so it's blazing fast! (can write about 5000 files in about 6 seconds)
+- Does not rely (bare-bones) on external dependencies
+- It's a small, platform-indipendent command and ridiculously easy to install
+
+
+**
+**
+
+
+* WHO ARE ITS COMPETITORS
+
+Probably you already know who the big players are:
+
+- Jekyll (Ruby) [[http://jekyllrb.com/]]
+- Gitbook (JS as Toolchain) [[https://www.gitbook.com/]]
+- Octopress (Ruby) [[http://octopress.org/]]
+- Hexo (NodeJS) [[https://hexo.io/]]
+- Harp (NodeJS) [[http://harpjs.com/]]
+- Pelican (Python) [[https://github.com/getpelican]]
+
+(Data from [[https://www.staticgen.com/][Staticgen]])
+
+
+**
+**
+
+
+* DOWNLOAD AND INSTALLATION
+
+- Get and execute the binary from [[https://github.com/spf13/hugo/releases/][github]] (fashonable old way)
+- or via [[http://brew.sh/][Homebrew]] on OS X: `$`brew`install`hugo`
+- you can also [[https://github.com/spf13/hugo#clone-the-hugo-project-contributor][Compile it]] yourself from source!
+
+And you're already on the go!
+
+
+**
+**
+
+
+* A CLOSER LOOK
+
+*PROS*
+
+- Content is organized specifically on purpose
+- Uses metadatas
+- Automatically build lists upon taxonomies
+- Themes!
+- Versatile command-line interface
+
+*CONS*
+
+- As this is Go with its static linking, extending Hugo = recompiling Hugo. No obvious plugin support.
+- No built-in back-end webapp
+- No native assets preprocessing ([[http://discuss.gohugo.io/t/support-for-html-css-js-preprocessors/127/8][no plans]] in the roadmap)
+- No pre-built deploy procedure ([[http://gohugo.io/meta/roadmap/][to be supported]])
+
+
+**
+**
+
+
+* PROJECT STRUCTURE
+
+HUGO handles all the scaffolding so you ready to work in no-time:
+
+  $ hugo new site /projects/mySite
+
+Project structure:
+
+  ▸ archetypes/   (DIR) place of the file data-models
+  ▸ content/      (DIR) contains the content you're going to add
+  ▸ layouts/      (DIR) the "view", place of layouts and template files
+  ▸ static/       (DIR) it's the compiled containing static files, handled by HUGO
+    config.toml   (FILE) site configuration file
+
+
+**
+**
+
+
+* CONTENT
+
+Each content file represents a specific data you're going to display. E.g. a blog post or simply a page.
+Content data is written in [[Markdown][http://daringfireball.net/projects/markdown/]].
+
+To create a new content:
+
+    $ hugo new home.md
+    $ hugo new contants.md
+    $ hugo new about.md
+
+    content
+    ├── about.md
+    ├── contacts.md
+    ├── home.md
+    └── special.md
+
+
+**
+**
+
+
+* SECTIONS
+
+Content can be grouped in *sections* which in structure is a subfolder of content.
+_In_Hugo,_the_content_should_be_arranged_in_the_same_way_they_are_intended_for_the_rendered_website._Without_any_additional_configuration,_the_following_will_just_work._
+Section should always have *singular*name*. *Any*level* of nesting is supported.
+
+    $ hugo new pizza/margherita.md
+    $ hugo new pizza/marinara.md
+    $ hugo new pizza/capricciosa.md
+
+    content
+    ├── about.md
+    ├── contacts.md
+    ├── home.md
+    └── pizza
+        ├── margherita.md
+        ├── marinara.md
+        └── capricciosa.md
+
+Section will affect the way their content will be interpreted, and it will be automatically associated to a specific type or layout context by _same_path_ and _same_filename_.
+
+
+**
+**
+
+
+* TYPES AND ARCHETYPES
+
+Hugo assumes content to be provided in sections, and that each section uses a specific content type.
+Doing this, each content in a section will inherit its type.
+A type is an abstract entity, which has its own
+
+- section
+- archetype
+- layout template(s)
+
+Think about the types of content that can be managed with *tumblr*.
+
+
+**
+**
+
+
+* TYPES AND ARCHETYPES
+
+As instance i can have a `post` type, so my site structure will change to this:
+
+    ├── archetypes
+    │   └── pizza.md        This will automatically associate to content/pizza content files
+    ├── config.toml
+    ├── content
+    │   ├── about.md
+    │   ├── contacts.md
+    │   ├── home.md
+    │   └── pizza
+    │       ├── margherita.md
+    │       ├── marinara.md
+    │       └── capricciosa.md
+    ├── data
+    ├── layouts
+    │   └── pizza           This will automatically associate to content/pizza content files
+    ├── public
+    └── static
+
+
+**
+**
+
+
+* FRONT MATTER
+
+Each file has a front-matter section. A collection of: configuration fields, custom variables, optional content overrides to global config, content metadata.
+
+    +++
+    title = "Pizza Margherita"
+    description = "This is the Pizza Margherita recipe"
+    tags = [ "classic", "neapoletan" ]
+    date = "2015-07-28"
+    categories = [
+      "Pizza",
+      "Recipe"
+    ]
+    slug = "pizza-margherita"
+    +++
+
+    Lorem ipsum dolor sit amet...
+
+
+Front-matter syntax can be in [[https://github.com/toml-lang/toml][TOML]], [[http://yaml.org/][YAML]] or [[http://json.org/][JSON]].
+Refer to [[http://gohugo.io/content/front-matter/]] for detail about the cases.
+
+
+**
+**
+
+
+* FRONT MATTER
+
+Content is always saved as draft whether not specified.
+Content can be post-dated.
+Drafted content will not be published unless specified via command line.
+
+Here's the result
+
+.iframe http://gohugo.io/content/example/
+
+
+**
+**
+
+
+* PRESENTATION LAYER
+
+The presentation layer is physically separated from the content but tightly coupled with it by section-dirname - template-dirname relation.
+
+
+**
+**
+
+
+* TEMPLATES
+
+This is what a common structure for file templates should look.
+Note that to build a site it could be took much simpler:
+
+    ├── layouts                     directory of the template files
+    │   ├── 404.html                error template
+    │   ├── _default                these templates will be assigned by default, hence the name
+    │   │   ├── li.html             template of each content in a list
+    │   │   ├── list.html           template of a list of contents
+    │   │   └── single.html         template of a single content (detail)
+    │   ├── pizza                   these templates will be assigned to all content of type 'pizza'
+    │   │   └── single.html
+    │   ├── index.html              homepage template
+    │   └── partials                partial templates
+    │       ├── author.html
+    │       ├── footer.html
+    │       ├── header.html
+    │       ├── navigation.html
+    │       └── pagination.html
+
+
+**
+**
+
+
+* TEMPLATE TYPES
+
+*Primary*
+- Single
+- List
+- Homepage
+
+*Supporting*
+- Partials
+- Content Views
+- Alternative single
+
+*Taxonomy*Terms*
+- RSS
+- Sitemap
+- 404
+
+HUGO reads [[http://golang.org/pkg/text/template/][GO]], [[https://github.com/eknkc/amber][Amber]] and [[http://ace.c9.io/#nav=about][ACE]] syntaxes.
+
+
+**
+**
